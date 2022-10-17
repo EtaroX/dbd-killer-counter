@@ -50,7 +50,8 @@ class User{
     if (!$this->openConnection()) return "no-conn";
     $ip = $this->connection->real_escape_string(getIP());
     $id = $this->connection->real_escape_string($this->id);;
-    $sql = "INSERT INTO `log` (`IP`, `ID_USER`) VALUES ('$ip', '$id')";
+    $sql = "INSERT INTO `log` (`IP`, `ID_USER`) VALUES ('$ip', '$id')"; 
+    //UWUWGA NIC TO GÓWNO NIE WYSYŁA DO BAZY DANYCH, TRZEBA DOPISAĆ
   }
   private function generateToken(){
     if (!$this->openConnection()) return "no-conn";
