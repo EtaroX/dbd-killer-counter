@@ -10,14 +10,27 @@ class User{
   private $cookie;
   private $tempauth;
 
-  public function __construct($username, $password){
-    $this->username = $username;
-    if($this->authenticate($password) == true){
-      $this->logData();
-      $this->generateToken();
-      $this->closeConnection();
-    }
+  public function __construct(){
   }
+  public static function register(array $array){
+    $instance = new self();
+    if(!(isset($array["username"]) && isset($array["password"]) && (isset($array["email"]) && validateEmail($array["email"])) && isset($array["fullname"]))){
+      return false;
+    }
+    if(!$instance->priv_register($array)){
+      return false;
+    }
+    if(!$instance->sendemail($array["email"])){
+      return false;
+    }
+    
+  }
+  public static function login($username, $password){
+    $instance = new self();
+    $instance->priv_login($username, $password);
+    return $instance;
+  }
+  
   public function __call( $name, $arguments ) {
     $function = array(
       "getUsername" => function(){
@@ -46,12 +59,39 @@ class User{
     else return false;
   }
 
+  private function priv_register(array $array){
+    if(!$this->openConnection()){
+      return false;
+    }
+    $username = $array["username"];
+    $fullname = $array["fullname"];
+    $email = $array["email"];
+    $password = password_hash($array["password"], PASSWORD_DEFAULT);
+    if(!$this->connection->query("INSERT INTO `users` (`username`, `fullname`, `email`, `password`) VALUES ('$username', '$fullname', '$email', '$password')")){
+      
+    }
+    
+
+  }
+  private function sendemail($email){
+     
+  }
+  
+  private function priv_login($username, $password){
+    $this->username = $username;
+    if($this->authenticate($password) == true){
+      $this->logData();
+      $this->generateToken();
+      $this->closeConnection();
+    }
+  }
+  
   private function logData(){
     if (!$this->openConnection()) return "no-conn";
     $ip = $this->connection->real_escape_string(getIP());
     $id = $this->connection->real_escape_string($this->id);;
     $sql = "INSERT INTO `log` (`IP`, `ID_USER`) VALUES ('$ip', '$id')"; 
-    //UWUWGA NIC TO GÓWNO NIE WYSYŁA DO BAZY DANYCH, TRZEBA DOPISAĆ
+    $this->connection->query($sql);
   }
   private function generateToken(){
     if (!$this->openConnection()) return "no-conn";
