@@ -1,6 +1,6 @@
 <?php
 define("HOST", $_SERVER['HTTP_HOST']);
-define("PODFOLDER", "/technoblade/dbd-killer-counter/");
+define("PODFOLDER", "/technoblade/dbd-killer-counter/src");
 define("SECUREONLY",false);
 
 
