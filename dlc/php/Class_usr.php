@@ -109,39 +109,7 @@ class User{
     }
     return true;
   }
-  private function sendemail($email, $username){
-    //function to send mail with link to api/login/ValidEmail.php
-    $randstr = random_str(5);
-    $this->openConnection();
-    $this->connection->query("INSERT INTO `email` (`email`, `username`, `randstr`) VALUES ('$email', '$username', '$randstr');");
-    
-    $token = md5($username.$email) . $randstr;
-    $link = "http://" . HOST . PODFOLDER . "api/login/ValidEmail.php?token=" . $token;
-    $mail = new PHPMailer();
-
-    $mail->isSMTP();
-    $mail->Host = EMAIL_HOST;
-    $mail->SMTPAuth = EMAIL_AUTH;
-    $mail->Username = EMAIL_USER;
-    $mail->Password = EMAIL_PASS;
-    $mail->SMTPSecure = 'tls';
-
-    $mail->From = EMAIL_FROM;
-    $mail->FromName = EMAIL_FROM_NAME;
-    $mail->addAddress($email);     // Add a recipient
-
-    $mail->isHTML(true);                                  // Set email format to HTML
-
-    $mail->Subject = 'DBD counter validation';
-    $mail->Body    = '$link'; //TODO: body of email
-    $mail->AltBody = '$link'; //TODO: body of email
-
-    if (!$mail->send()) {
-      return false;
-    } else {
-      return true;
-    }
-  }
+  
   
   private function priv_login($username, $password){
     $this->username = $username;
@@ -191,6 +159,84 @@ class User{
       $this->email = $row['EMAIL'];
       return true;
   }
+
+
+
+//* Email stuff
+private function sendemail($email, $username){
+  //function to send mail with link to api/login/ValidEmail.php
+  $randstr = random_str(5);
+  if(EMAIL_DB_JSON){
+     //todo: json implementation 
+  } else{
+    $this->openConnection();
+    $this->connection->query("INSERT INTO `email` (`email`, `username`, `randstr`,`EXPIRE_DATE`) VALUES ('$email', '$username', '$randstr', DATE_ADD(NOW(), INTERVAL 1 HOUR));");
+    $this->closeConnection();
+  }
+  $token = md5($username.$email) . $randstr;
+  $link = "http://" . HOST . PODFOLDER . "api/login/ValidEmail.php?token=" . $token;
+  $mail = new PHPMailer();
+
+  $mail->isSMTP();
+  $mail->Host = EMAIL_HOST;
+  $mail->SMTPAuth = EMAIL_AUTH;
+  $mail->Username = EMAIL_USER;
+  $mail->Password = EMAIL_PASS;
+  $mail->SMTPSecure = 'tls';
+
+  $mail->From = EMAIL_FROM;
+  $mail->FromName = EMAIL_FROM_NAME;
+  $mail->addAddress($email);
+
+  $mail->isHTML(true);
+
+  $mail->Subject = 'DBD counter validation';
+  $mail->Body    = '$link'; //TODO: body of email
+  $mail->AltBody = '$link'; //TODO: body of email
+
+  if (!$mail->send()) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+static public function ValidEmail($token,$username,$email){
+  $instance = new self();
+  if($instance->priv_ValidEmail($token,$username,$email) == true){
+    $instance->__destruct();
+    return true;}
+  $instance->__destruct();
+  return false;
+}
+private function priv_ValidEmail($token,$username,$email){
+  if(EMAIL_DB_JSON_FILE){
+     //todo: json implementation 
+  }
+  $this->openConnection();
+  $username = $this->connection->real_escape_string($username);
+  $email = $this->connection->real_escape_string($email);
+  $sql = "SELECT * FROM `email` WHERE `username` = '$username' AND `email` = '$email'";
+  $result = $this->connection->query($sql);
+  if ($result->num_rows == 0) {
+    return false;
+  }
+  $row = $result->fetch_assoc();
+  $result->free();
+  if($row["EXPIRE_DATE"] < date("Y-m-d H:i:s")){
+    $this->connection->query("DELETE FROM `email` WHERE `username` = '$username' AND `email` = '$email'");
+    return false;
+  }
+  if(md5($row['username'].$row['email']).$row['randstr'] == $token){
+    $this->connection->query("UPDATE `users` SET `ACTIVE` = 1 WHERE `username` = '$username' AND `email` = '$email'");
+    $this->connection->query("DELETE FROM `email` WHERE `username` = '$username' AND `email` = '$email'");
+    return true;
+  }
+  else return false;
+}
+
+
+
   //* technical stuff
   private function openConnection()  {
     if ($this->connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {$this->connection->set_charset("utf-8"); return true;}
