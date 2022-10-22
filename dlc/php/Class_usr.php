@@ -1,4 +1,9 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require_once("../vendor/PHPmail/autoload.php");
 require_once("consts.php");
 require_once("functions.php");
 require_once("Class_val.php");
@@ -16,7 +21,7 @@ class User{
   public function __destruct(){
     $this->closeConnection();
   }
-  
+
   /*
   *   @param $input array
   *   @return boolean
@@ -38,18 +43,18 @@ class User{
       $instance->__destruct();
       return false;
     }
-    if(!$instance->sendemail($array["email"])){
+    if(!$instance->sendemail($array["email"],$array("username"))){
       $instance->__destruct();
       return false;
     }
     $instance->__destruct();
     return true;
   }
+
   /*
   *   @param $username string, $password string
   *   @return Class, "no-conn", "invalid", "not-activated"
   */
-
   public static function login($username, $password){
     $instance = new self();
     if($temp = $instance->priv_login($username, $password) == true)
@@ -72,9 +77,8 @@ class User{
     if(array_key_exists($name, $function)){
       return $function[$name]();
     }
-
-
   }
+  
   public function isAuth(){
     if($this->tempauth == true){
     $this->tempauth = false;
@@ -105,8 +109,38 @@ class User{
     }
     return true;
   }
-  private function sendemail($email){
-     //function to send mail with link to api/login/ValidEmail.php
+  private function sendemail($email, $username){
+    //function to send mail with link to api/login/ValidEmail.php
+    $randstr = random_str(5);
+    $this->openConnection();
+    $this->connection->query("INSERT INTO `email` (`email`, `username`, `randstr`) VALUES ('$email', '$username', '$randstr');");
+    
+    $token = md5($username.$email) . $randstr;
+    $link = "http://" . HOST . PODFOLDER . "api/login/ValidEmail.php?token=" . $token;
+    $mail = new PHPMailer();
+
+    $mail->isSMTP();
+    $mail->Host = EMAIL_HOST;
+    $mail->SMTPAuth = EMAIL_AUTH;
+    $mail->Username = EMAIL_USER;
+    $mail->Password = EMAIL_PASS;
+    $mail->SMTPSecure = 'tls';
+
+    $mail->From = EMAIL_FROM;
+    $mail->FromName = EMAIL_FROM_NAME;
+    $mail->addAddress($email);     // Add a recipient
+
+    $mail->isHTML(true);                                  // Set email format to HTML
+
+    $mail->Subject = 'DBD counter validation';
+    $mail->Body    = '$link'; //TODO: body of email
+    $mail->AltBody = '$link'; //TODO: body of email
+
+    if (!$mail->send()) {
+      return false;
+    } else {
+      return true;
+    }
   }
   
   private function priv_login($username, $password){
