@@ -1,8 +1,8 @@
 <?php
-
 require_once("consts.php");
 require_once("functions.php");
 require_once("Class_val.php");
+
 class User{
   private $connection;
   private $id;
@@ -16,7 +16,11 @@ class User{
   public function __destruct(){
     $this->closeConnection();
   }
-
+  
+  /*
+  *   @param $input array
+  *   @return boolean
+  */
   public static function register(array $array){
     $instance = new self();
     $instance->openConnection();
@@ -41,6 +45,11 @@ class User{
     $instance->__destruct();
     return true;
   }
+  /*
+  *   @param $username string, $password string
+  *   @return Class, "no-conn", "invalid", "not-activated"
+  */
+
   public static function login($username, $password){
     $instance = new self();
     if($temp = $instance->priv_login($username, $password) == true)
