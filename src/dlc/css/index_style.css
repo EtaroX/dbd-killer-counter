@@ -1,0 +1,50 @@
+body,html{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-image: url("https://deadbydaylight.com/static/d5657f790dce3a2586ceb7fe927bf3af/2e9bd/dbd-keyart-default.jpg");
+    background-size: cover;
+}
+section{
+    height: 80%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+button{
+    font-size: 2em;
+    padding: 1em;
+    margin: 2em;
+    width: 6em;
+    text-align: center;
+
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+
+header,footer{
+    height: 10%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(180, 0, 165, 0.555);
+    color: white;
+}
+.footer{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.footer-text{
+    font-size: 1.5em;
+    color: white;
+}
