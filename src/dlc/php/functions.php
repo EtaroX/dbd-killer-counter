@@ -7,13 +7,7 @@ require_once "consts.php";
 
 
 //* technical stuff
-//function for email validation
-function validateEmail($email){
-    if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-      return false;
-    }
-    return true;
-  }
+
 
 function getIP(){
     $ip = $_SERVER['REMOTE_ADDR'];
