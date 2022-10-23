@@ -3,19 +3,66 @@
     <head>
         <title>DBD Killer Counter</title>
         <link rel="stylesheet" href="dlc/css/index_style.css">
+        <style>
+
+        </style>
     </head>
     <body>
         <header>
+            <!--Button on top right corner to go back-->
+            <button id="back-button" style="display:none">Back</button>
             <h1>DBD Killer Counter</h1>
         </header>
-        <section>
+        <section id="main">
         <div>
-            <a href="login.html"><button class="button">Login</button></a>
-            <a href="register.html"><button class="button">Register</button></a>
+            <a><button id="btt-login" class="button">Login</button></a>
+            <a><button id="btt-register" class="button">Register</button></a>
+        </div>
+    </section>
+    <section id="login" style="display:none">
+        <!--css for this shit-->
+        <div class="input-container">
+            <input type="text" id="login-username" placeholder="Username">
+            <input type="password" id="login-password" placeholder="Password"><br><br>
+            <button id="btt-login-submit" class="button" >Login</button>
+        </div>
+    </section>
+    <section id="register" style="display:none">
+        <div class="input-container"> 
+            <input type="text" id="register-username" placeholder="Username">
+            <input type="email"id="register-email" placeholder="Email" > <!--TODO: add validation for email-->
+            <input type="text" id="register-fullname" placeholder="Jakie zaimki wariacie">
+            <input type="password" id="register-password" placeholder="Password">
+            <input type="password" id="register-password-confirm" placeholder="Confirm Password"><br><br>
+            <button id="btt-register-submit" class="button">Register</button>
         </div>
     </section>
     <footer>
         <a class="footer" href="https://etaro.pl"><div class="footer-text">Created by Etaro</div></a>
     </footer>
     </body> 
+    <script>
+        //TODO: get the f out to another file
+        document.getElementById("btt-login").addEventListener("click", function(){
+            document.getElementById("login").style.display = "flex";
+            document.getElementById("back-button").style.display = "block";
+            document.getElementById("register").style.display = "none";
+            document.getElementById("main").style.display = "none";
+        });
+        document.getElementById("btt-register").addEventListener("click", function(){
+            document.getElementById("register").style.display = "flex";
+            document.getElementById("back-button").style.display = "block";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("main").style.display = "none";
+        });
+        document.getElementById("back-button").addEventListener("click", function(){
+            document.getElementById("main").style.display = "flex";
+            document.getElementById("back-button").style.display = "none";
+            document.getElementById("login").style.display = "none";
+            document.getElementById("register").style.display = "none";
+        });
+
+
+
+    </script>
 </html>

@@ -15,13 +15,22 @@ section{
     align-items: center;
     justify-content: center;
 }
-button{
+#btt-login,#btt-register{
     font-size: 2em;
     padding: 1em;
     margin: 2em;
     width: 6em;
     text-align: center;
-
+}
+#btt-login-submit{
+    padding: 1em;
+    text-align: center;
+}
+.input-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 a{
     text-decoration: none;
@@ -47,4 +56,11 @@ header,footer{
 .footer-text{
     font-size: 1.5em;
     color: white;
+}
+#back-button{
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 2em;
+    padding: 0.5em;
 }
