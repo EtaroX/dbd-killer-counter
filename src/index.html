@@ -3,13 +3,10 @@
     <head>
         <title>DBD Killer Counter</title>
         <link rel="stylesheet" href="dlc/css/index_style.css">
-        <style>
-
-        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
         <header>
-            <!--Button on top right corner to go back-->
             <button id="back-button" style="display:none">Back</button>
             <h1>DBD Killer Counter</h1>
         </header>
@@ -20,7 +17,7 @@
         </div>
     </section>
     <section id="login" style="display:none">
-        <!--css for this shit-->
+        <!--TODO:css for this shit-->
         <div class="input-container">
             <input type="text" id="login-username" placeholder="Username">
             <input type="password" id="login-password" placeholder="Password"><br><br>
@@ -61,7 +58,33 @@
             document.getElementById("login").style.display = "none";
             document.getElementById("register").style.display = "none";
         });
-
+        document.getElementById("btt-login-submit").addEventListener("click", function(){
+            var username = document.getElementById("login-username").value;
+            var password = document.getElementById("login-password").value;
+            $.ajax({
+                type: "POST",
+                url: "api/login/login.php",
+                data: {username: username, password: password},
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        });
+        document.getElementById("btt-register-submit").addEventListener("click", function(){
+            var username = document.getElementById("register-username").value;
+            var email = document.getElementById("register-email").value;
+            var fullname = document.getElementById("register-fullname").value;
+            var password = document.getElementById("register-password").value;
+            var passwordConfirm = document.getElementById("register-password-confirm").value;
+            $.ajax({
+                type: "POST",
+                url: "api/login/register.php",
+                data: {username: username, email: email, fullname: fullname, password: password, passwordConfirm: passwordConfirm},
+                success: function(data){
+                    console.log(data);
+                }
+            });
+        });
 
 
     </script>

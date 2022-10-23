@@ -3,7 +3,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-require_once("../vendor/PHPmail/autoload.php");
+require_once("../../dlc/vendor/PHPmail/autoload.php");
 require_once("consts.php");
 require_once("functions.php");
 require_once("Class_val.php");
@@ -239,7 +239,7 @@ private function priv_ValidEmail($token,$username,$email){
 
   //* technical stuff
   private function openConnection()  {
-    if ($this->connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {$this->connection->set_charset("utf-8"); return true;}
+    if ($this->connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {$this->connection->set_charset("utf8"); return true;}
     return false;
   }
   private function closeConnection(){
