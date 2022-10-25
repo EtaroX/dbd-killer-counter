@@ -66,6 +66,7 @@
                 url: "api/login/login.php",
                 data: {username: username, password: password},
                 success: function(data){
+                    
                     console.log(data);
                 }
             });
@@ -76,16 +77,18 @@
             var fullname = document.getElementById("register-fullname").value;
             var password = document.getElementById("register-password").value;
             var passwordConfirm = document.getElementById("register-password-confirm").value;
-            $.ajax({
-                type: "POST",
-                url: "api/login/register.php",
-                data: {username: username, email: email, fullname: fullname, password: password, passwordConfirm: passwordConfirm},
-                success: function(data){
-                    console.log(data);
-                }
-            });
-        });
+            if(password == passwordConfirm){
+                $.ajax({
+                    type: "POST",
+                    url: "api/login/register.php",
+                    data: {username: username, email: email, fullname: fullname, password: password},
+                    success: function(data){
 
+                        console.log(data);
+                    }
+                });
+            }
+        });
 
     </script>
 </html>
