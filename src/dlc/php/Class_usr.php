@@ -213,7 +213,7 @@ static public function ValidEmail($token,$username,$email){
   return false;
 }
 private function priv_ValidEmail($token,$username,$email){
-  if(EMAIL_DB_JSON_FILE){
+  if(EMAIL_DB_JSON){
      //todo: json implementation 
   }
   $this->openConnection();
