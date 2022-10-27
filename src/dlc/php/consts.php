@@ -11,7 +11,7 @@ define('DB_PASS', '');
 define('DB_NAME', 'technoblade'); //why technoblade? because he was a god
 
 define('EMAIL_DB_JSON', false); //TODO: implement json file for email validation
-define('EMAIL_DB_JSON_FILE', 'email.json'); 
+define('EMAIL_DB_JSON_DIR', PODFOLDER.'/dlc/jsondb'); 
 
 //*Email connection data
 define('EMAIL_HOST', 'web6.aftermarket.hosting');

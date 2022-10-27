@@ -3,6 +3,8 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+if(EMAIL_DB_JSON) require_once("../../dlc/vendor/JSONDB/Store.php");
+
 require_once("../../dlc/vendor/PHPmail/autoload.php");
 require_once("consts.php");
 require_once("functions.php");
@@ -167,7 +169,8 @@ private function sendemail($email, $username){
   //function to send mail with link to api/login/ValidEmail.php
   $randstr = random_str(5);
   if(EMAIL_DB_JSON){
-     //todo: json implementation 
+    $jsondb = new \SleekDB\Store("email", EMAIL_DB_JSON_DIR);
+    //$releaseDate = date("H:i",strtotime($date. " + 1hour ")); TODO:Get this shit to work
   } else{
     $this->openConnection();
     $this->connection->query("INSERT INTO `email` (`email`, `username`, `randstr`,`EXPIRE_DATE`) VALUES ('$email', '$username', '$randstr', DATE_ADD(NOW(), INTERVAL 1 HOUR));");
