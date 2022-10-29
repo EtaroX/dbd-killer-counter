@@ -1,17 +1,25 @@
 <?php
 define("HOST", $_SERVER['HTTP_HOST']);
 define("PODFOLDER", "/technoblade/dbd-killer-counter/src");
-define("SECUREONLY",false);
+define("SECUREONLY", false);
 
 
 //*Database connection data
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'technoblade'); //why technoblade? because he was a god
+define('DB_TYPE', 'mysql'); //TODO: add support for other databases types
+if (DB_TYPE == 'mysql') {
+  define('DB_HOST', 'localhost');
+  define('DB_USER', 'root');
+  define('DB_PASS', '');
+  define('DB_NAME', 'technoblade'); //why technoblade? because he was a god
+}
+
+
+
+
 
 define('EMAIL_DB_JSON', false); //TODO: implement json file for email validation
-define('EMAIL_DB_JSON_DIR', PODFOLDER.'/dlc/jsondb'); 
+define('EMAIL_DB_JSON_DIR', PODFOLDER . '/dlc/jsondb'); //!My dude, remeber to block access to this folder
+define('EMAIL_DELETE_AFTER_VALID', true); //TODO: impelent not deleting email after validation
 
 //*Email connection data
 define('EMAIL_HOST', 'web6.aftermarket.hosting');
