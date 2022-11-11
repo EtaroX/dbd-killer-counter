@@ -64,7 +64,6 @@ class User {
       return $instance;
     else return $temp;
   }
-
   public function __call($name, $arguments) {
     $function = array(
       "getUsername" => function () {
@@ -83,10 +82,6 @@ class User {
   }
 
   public function isAuth() {
-    if ($this->tempauth == true) {
-      $this->tempauth = false;
-      return true;
-    }
     if ($_COOKIE["aToken"] == $this->cookie)
       return true;
     else return false;
