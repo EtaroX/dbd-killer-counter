@@ -86,6 +86,12 @@ class User {
       return true;
     else return false;
   }
+  public function logout() {
+    setcookie("aToken", "", time() - 3600, "/");
+    $this->cookie = "";
+    $this->__destruct();
+  }
+
 
   private function priv_register(array $array) {
     if (!$this->openConnection()) {
@@ -135,7 +141,7 @@ class User {
     $id = $this->connection->real_escape_string($this->id);;
     $query = "INSERT INTO `cookies` (`ID_USER`, `COOKIE`, `EXPIRE_DATE`) VALUES ('$id', '$cookie', DATE_ADD(NOW(), INTERVAL 1 DAY))";
     $this->connection->query($query);
-    setcookie("aToken", $cookie, time() + (86400 * 30), "/", HOST, SECUREONLY);
+    setcookie("aToken", $cookie, time() + (86400 * 30), "/", HOST, COOKIE_SECURE, COOKIE_HTTPONLY);
   }
 
   private function authenticate($password) {

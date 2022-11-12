@@ -1,7 +1,6 @@
 <?php
 define("HOST", $_SERVER['HTTP_HOST']);
 define("PODFOLDER", "/technoblade/dbd-killer-counter/src");
-define("SECUREONLY", false);
 
 
 //*Database connection data
@@ -14,6 +13,12 @@ if (DB_TYPE == 'mysql') {
 }
 
 
+//*Cookies params and shit
+define('COOKIE_DOMAIN', HOST);
+define('COOKIE_PATH', PODFOLDER);
+define('COOKIE_SECURE', 'false');
+define('COOKIE_HTTPONLY', true);
+define('COOKIE_SAMESITE', 'Lax');
 
 
 
