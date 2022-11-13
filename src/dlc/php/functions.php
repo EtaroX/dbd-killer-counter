@@ -5,7 +5,7 @@ session_start();
 //* localy purge everything
 function purgeAll() {
   if (isset($_SESSION["user"]) && get_class($_SESSION["user"]) == "User") {
-    $_SESSION["user"]->purgeAll();
+    $_SESSION["user"]->logout();
   }
   $_SESSION = array();
 

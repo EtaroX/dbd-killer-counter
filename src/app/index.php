@@ -2,12 +2,12 @@
 session_start();
 
 if(isset($_POST['logout']) && $_POST['logout'] == 'logout'){
-  // function to purge all shit
+  purgeAll();
   undersite("index.html?status=logout");
 }
 
 if($_SESSION['user']->isAuth()){
-  // function to purge all shit
+  purgeAll();
   undersite("index.html?status=timeout");
 }
 ?>
