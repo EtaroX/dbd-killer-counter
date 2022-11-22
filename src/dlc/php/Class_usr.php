@@ -87,6 +87,7 @@ class User {
     else return false;
   }
   public function logout() {
+    //TODO: remove cookie from db
     setcookie("aToken", "", time() - 3600, "/");
     $this->cookie = "";
     $this->__destruct();
@@ -118,6 +119,7 @@ class User {
   private function priv_login($username, $password) {
     $this->username = $username;
     if (($temp = $this->authenticate($password)) == true) {
+      unset($password);
       $this->logData();
       $this->generateToken();
       $this->closeConnection();
@@ -128,33 +130,19 @@ class User {
   }
 
   private function logData() {
-    if (!$this->openConnection()) return "no-conn";
-    $ip = $this->connection->real_escape_string(getIP());
-    $id = $this->connection->real_escape_string($this->id);;
-    $sql = "INSERT INTO `log` (`IP`, `ID_USER`) VALUES ('$ip', '$id')";
-    $this->connection->query($sql);
+    DataHandler::insertLoggedData(getIP(), $this->id);
   }
+
   private function generateToken() {
-    if (!$this->openConnection()) return "no-conn";
     $cookie = random_str(64);
     $this->cookie = $cookie;
-    $id = $this->connection->real_escape_string($this->id);;
-    $query = "INSERT INTO `cookies` (`ID_USER`, `COOKIE`, `EXPIRE_DATE`) VALUES ('$id', '$cookie', DATE_ADD(NOW(), INTERVAL 1 DAY))";
-    $this->connection->query($query);
-    setcookie("aToken", $cookie, time() + (86400 * 30), "/", HOST, COOKIE_SECURE, COOKIE_HTTPONLY);
+    DataHandler::insertCookie($this->id, $cookie);
+    setcookie(COOKIE_TOKEN_NAME, $cookie, time() + (86400 * 30), COOKIE_PATH, COOKIE_DOMAIN, COOKIE_SECURE, COOKIE_HTTPONLY);
   }
 
   private function authenticate($password) {
     if ($password == null) $password = "";
-    if (!$this->openConnection()) return "no-conn";
-    $user =  $this->connection->real_escape_string($this->username);
-    $sql = "SELECT * FROM `users` WHERE `USERNAME` = '$user' AND `ACTIVE` != 2";
-    $result = $this->connection->query($sql);
-    if ($result->num_rows == 0) {
-      return "invalid";
-    }
-    $row = $result->fetch_assoc();
-    $result->free();
+    $row = DataHandler::getUserAuth($this->username);
     if (!password_verify($password, $row['PASSWORD'])) return "invalid";
     if ($row['ACTIVE'] == 0) return "not-activated";
     $this->id = $row['ID_USER'];

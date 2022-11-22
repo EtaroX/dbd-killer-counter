@@ -14,14 +14,17 @@ if (DB_TYPE == 'mysql') {
 
 
 //*Cookies params and shit
+define('COOKIE_TOKEN_NAME', 'aToken');
 define('COOKIE_DOMAIN', HOST);
 define('COOKIE_PATH', PODFOLDER);
 define('COOKIE_SECURE', 'false');
 define('COOKIE_HTTPONLY', true);
 define('COOKIE_SAMESITE', 'Lax');
+define('COOKIE_REMOVE', 'true'); //*if this is true, cookie will be deleted when user logs out, instead of being just expired
+//TODO: time for cookie, but this is for later XD
 
 
-
+//* If EMAIL_DB_JSON is false, setting other two const is useless
 define('EMAIL_DB_JSON', false); //TODO: implement json file for email validation
 define('EMAIL_DB_JSON_DIR', PODFOLDER . '/dlc/jsondb'); //!My dude, remeber to block access to this folder
 define('EMAIL_DELETE_AFTER_VALID', true); //TODO: impelent not deleting email after validation
