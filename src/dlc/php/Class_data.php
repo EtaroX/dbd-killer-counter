@@ -103,6 +103,10 @@ class DataHandler {
   }
   private function priv_MYSQL_deleteCookie($cookie){
     $cookie = $this->connection->real_escape_string($cookie);
+    if(COOKIE_REMOVE == true)
+      $query = "DELETE FROM `cookies` WHERE `COOKIE` = '$cookie'";
+    else $query = "UPDATE `cookies` SET active = 0 WHERE `COOKIE` = '$cookie'";
+    $this->connection->query($query);
   }
   
   private function priv_JSON_deleteCookie($cookie) {
