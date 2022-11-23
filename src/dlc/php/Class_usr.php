@@ -4,7 +4,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-if (EMAIL_DB_JSON) require_once("../../dlc/vendor/JSONDB/Store.php");
+if (DB_TYPE) require_once("../../dlc/vendor/JSONDB/Store.php");
 
 require_once("../../dlc/vendor/PHPmail/autoload.php");
 require_once("consts.php");
@@ -54,6 +54,13 @@ class User {
     return true;
   }
 
+  private function priv_register(array $array) {
+    $array['password'] = password_hash($array['password'], PASSWORD_DEFAULT);
+    return DataHandler::registerUser($array);
+  }
+
+
+
   /*
   *   @param $username string, $password string
   *   @return Class, "no-conn", "invalid", "not-activated"
@@ -87,33 +94,13 @@ class User {
     else return false;
   }
   public function logout() {
-    //TODO: remove cookie from db
+    DataHandler::deleteCookie($this->cookie);
     setcookie("aToken", "", time() - 3600, "/");
     $this->cookie = "";
     $this->__destruct();
   }
 
 
-  private function priv_register(array $array) {
-    if (!$this->openConnection()) {
-      return false;
-    }
-    $username = $this->connection->real_escape_string($array["username"]);
-    $email = $this->connection->real_escape_string($array["email"]);
-    if (!$this->connection->querry("SELECT * FROM users WHERE username = '$username' OR `email` = '$email';")) {
-      return false;
-    }
-    if ($this->connection->affected_rows > 0) {
-      return false;
-    }
-
-    $fullname = $this->connection->real_escape_string($array["fullname"]);
-    $password = $this->connection->real_escape_string(password_hash($array["password"], PASSWORD_DEFAULT));
-    if (!$this->connection->query("INSERT INTO `users` (`username`, `fullname`, `email`, `password`) VALUES ('$username', '$fullname', '$email', '$password');")) {
-      return false;
-    }
-    return true;
-  }
 
 
   private function priv_login($username, $password) {
@@ -157,7 +144,7 @@ class User {
   private function sendemail($email, $username) {
     //function to send mail with link to api/login/ValidEmail.php
     $randstr = random_str(5);
-    if (EMAIL_DB_JSON) {
+    if (EMAIL_DB_TYPE == 'json') {
       $jsondb = new \SleekDB\Store("email", EMAIL_DB_JSON_DIR);
       $datetime = new DateTime();
       $datetime->add(new DateInterval('PT1H'));
@@ -169,7 +156,7 @@ class User {
       ]);
       unset($jsondb);
       unset($datetime);
-    } else {
+    } else if (EMAIL_DB_TYPE == 'mysql') {
       $this->openConnection();
       $this->connection->query("INSERT INTO `email` (`email`, `username`, `token`,`EXPIRE_DATE`) VALUES ('$email', '$username', '$randstr', DATE_ADD(NOW(), INTERVAL 1 HOUR));");
       $this->closeConnection();
@@ -214,7 +201,7 @@ class User {
   private function priv_ValidEmail($token, $username, $email) {
     $this->openConnection();
     $array = [];
-    if (EMAIL_DB_JSON) {
+    if (EMAIL_DB_TYPE == 'json') {
       $jsondb = new \SleekDB\Store("email", EMAIL_DB_JSON_DIR);
       $result = $jsondb->findBy(["email" => $email, "username" => $username]);
       if ($result == null) return false;
@@ -224,7 +211,7 @@ class User {
         return false;
       }
       $array = $result;
-    } else {
+    } else if (EMAIL_DB_TYPE == 'mysql') {
       $username = $this->connection->real_escape_string($username);
       $email = $this->connection->real_escape_string($email);
       $sql = "SELECT * FROM `email` WHERE `username` = '$username' AND `email` = '$email'";
