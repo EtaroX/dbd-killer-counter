@@ -12,8 +12,12 @@ if (DB_TYPE == 'mysql') {
   define('DB_NAME', 'technoblade'); //why technoblade? because he was a god
 }
 
-
 //*Cookies params and shit
+define('COOKIE_DB_TYPE', DB_TYPE); //*its copies from main DB type selected, but you can change it to your own choice
+if(COOKIE_DB_TYPE == 'json') {
+ //TODO: add json support
+}
+
 define('COOKIE_TOKEN_NAME', 'aToken');
 define('COOKIE_DOMAIN', HOST);
 define('COOKIE_PATH', PODFOLDER);
@@ -25,8 +29,16 @@ define('COOKIE_REMOVE', 'true'); //*if this is true, cookie will be deleted when
 
 
 //* If EMAIL_DB_JSON is false, setting other two const is useless
+//todo: rewrite email consts
+
+define('EMAIL_DB_TYPE', 'mysql');
+if(EMAIL_DB_TYPE == 'mysql'){
+
+} else if(EMAIL_DB_TYPE == 'json'){
+  define('EMAIL_DB_JSON_DIR', PODFOLDER . '/dlc/jsondb'); //!My dude, remeber to block access to this folder
+
+}
 define('EMAIL_DB_JSON', false); //TODO: implement json file for email validation
-define('EMAIL_DB_JSON_DIR', PODFOLDER . '/dlc/jsondb'); //!My dude, remeber to block access to this folder
 define('EMAIL_DELETE_AFTER_VALID', true); //TODO: impelent not deleting email after validation
 
 //*Email connection data
